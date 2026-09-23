@@ -96,6 +96,22 @@
 - เสร็จเมื่อ: หน้าจอเรียก API จริงผ่าน /api ได้และทุก flow หลักแลกเปลี่ยนข้อมูลกับ backend อย่างต่อเนื่อง
 - สถานะ: พร้อมทำ
 
+### T-13 ต่อหน้าเลือกช่วงเวลากับ GET /slots จริง
+- รองรับ: FR-BKG-01, FR-BKG-06
+- ตรวจด้วย: ไม่มี AC ตรง ๆ เป็นงาน integration ของ T-13
+- ไฟล์ที่แตะ: frontend/src/pages/SlotPicker.jsx, frontend/vite.config.js, backend/app/main.py
+- ต้องทำหลัง: T-02, T-09
+- เสร็จเมื่อ: หน้าเลือกช่วงเวลาเรียก /api/slots จริงจาก backend และแสดงช่วงเวลาจากข้อมูลตัวอย่างในฐานข้อมูล
+- สถานะ: เสร็จ
+
+### T-14 ต่อหน้ายืนยันกับ POST /bookings จริง
+- รองรับ: FR-BKG-03, FR-BKG-04
+- ตรวจด้วย: ไม่มี AC ตรง ๆ เป็นงาน integration ของ T-14
+- ไฟล์ที่แตะ: frontend/src/pages/ConfirmBooking.jsx, frontend/src/api/client.js
+- ต้องทำหลัง: T-03, T-05, T-10, T-11
+- เสร็จเมื่อ: หน้ายืนยันเรียก POST /bookings จริงและแสดงผลตาม flow จริง
+- สถานะ: พร้อมทำ
+
 ## ตารางตรวจความครบ AC
 | AC ID | task ที่ตรวจ AC นี้ |
 |---|---|

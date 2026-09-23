@@ -17,3 +17,10 @@
 - ไฟล์ที่สร้างหรือแก้: backend/app/db/models.py, backend/app/db/session.py, backend/app/db/migrations/001_init.py, backend/tests/test_db_schema.py
 - ผล test: pytest -q tests/test_db_schema.py -> ผ่านหลังแก้ปัญหา SQLAlchemy type annotation และเรียก init_db() ก่อนตรวจ schema
 - สิ่งที่เกือบต้องเดาแต่ถามแทน: ไม่มี; โครงสร้าง task เป็นไปตาม spec และ plan อย่างชัดเจน จึงไม่ได้ต้องเดา
+
+## ครั้งที่ 4: 2569-09-23
+- ใช้คำสั่ง: /implement T-13 specs/001-booking/tasks.md
+- วัตถุประสงค์: ต่อหน้าเลือกช่วงเวลารับข้อมูลจริงจาก GET /api/slots ผ่าน proxy ใน Vite ไปยัง FastAPI ที่ port 8000 และบันทึกข้อมูลตัวอย่างเพื่อให้หน้าไม่ว่าง
+- ไฟล์ที่สร้างหรือแก้: backend/app/main.py, frontend/src/pages/SlotPicker.jsx, specs/001-booking/tasks.md
+- ผล test: pytest -q tests/test_slots.py -> ผ่าน; frontend test สำหรับ SlotPicker -> ผ่าน
+- สิ่งที่ถามแทน: ไม่มี; โครงสร้างว่าด้วย proxy /api และ seed ข้อมูลตัวอย่างสอดคล้องกับ plan.md และ task T-13 อย่างชัดเจน

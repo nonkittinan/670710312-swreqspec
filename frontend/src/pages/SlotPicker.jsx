@@ -1,21 +1,22 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-const mockSlots = [
-  { id: 1, date: '2026-09-24', start: '09:00', end: '10:00', remaining: 3, packageCode: 'GENERAL' },
-  { id: 2, date: '2026-09-24', start: '10:00', end: '11:00', remaining: 2, packageCode: 'GENERAL' },
-  { id: 3, date: '2026-09-24', start: '13:00', end: '14:00', remaining: 1, packageCode: 'GENERAL' },
-  { id: 4, date: '2026-09-24', start: '08:00', end: '09:00', remaining: 5, packageCode: 'PREMIUM' },
-]
+const today = new Date().toISOString().slice(0, 10)
 
 export default function SlotPicker() {
   const [packageCode, setPackageCode] = useState('GENERAL')
-  const [date, setDate] = useState('2026-09-24')
+  const [date, setDate] = useState(today)
+  const [slots, setSlots] = useState([])
 
-  const visibleSlots = useMemo(() => {
-    return mockSlots.filter((slot) => slot.packageCode === packageCode || !slot.packageCode)
-  }, [packageCode])
+  useEffect(() => {
+    const loadSlots = async () => {
+      const params = new URLSearchParams({ date_from: date, package_code: packageCode })
+      const response = await fetch(`/api/slots?${params.toString()}`)
+      const data = await response.json()
+      setSlots(data)
+    }
 
-  const filteredSlots = visibleSlots.filter((slot) => slot.date === date)
+    loadSlots()
+  }, [packageCode, date])
 
   return (
     <main className="mx-auto max-w-3xl p-6">
@@ -47,17 +48,17 @@ export default function SlotPicker() {
       </div>
 
       <div className="mt-6 space-y-3">
-        {filteredSlots.length === 0 ? (
+        {slots.length === 0 ? (
           <p className="text-sm text-slate-500">ไม่พบช่วงเวลาว่างในวันที่เลือก</p>
         ) : (
-          filteredSlots.map((slot) => (
+          slots.map((slot) => (
             <button
               key={slot.id}
               type="button"
               className="flex w-full items-center justify-between rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-left text-slate-700 shadow-sm"
             >
               <span>
-                {slot.start} - {slot.end}
+                {slot.start_time} - {slot.end_time}
               </span>
               <span className="rounded-full bg-white px-2 py-1 text-sm font-medium text-teal-800">
                 คงเหลือ {slot.remaining} ที่
