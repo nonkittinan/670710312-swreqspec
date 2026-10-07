@@ -1,26 +1,46 @@
-# Prompt Log
+# Prompt log
 
-## ครั้งที่ 1: 2569-09-23
-- ใช้คำสั่ง: /tasks
-- วัตถุประสงค์: แยก requirements จาก specs/001-booking/spec.md เป็น tasks.md ตามหลัก Spec-Driven Development
-- ผลลัพธ์: สร้างไฟล์ specs/001-booking/tasks.md เสร็จสิ้น โดยมี 11 task, 1 task ที่รอ Q-02, ครอบคลุม AC และ Constraint ที่มีใน spec แล้ว
-- หมายเหตุ: ไม่เริ่มทำ task ใด ๆ ตามเงื่อนไขของ prompt
+บันทึกทุกครั้งที่ใช้ AI กับ repo นี้ เขียนต่อท้ายเรื่อย ๆ ไม่ลบของเก่า
 
-## ครั้งที่ 2: 2569-09-23
-- ใช้คำสั่ง: /tasks
-- วัตถุประสงค์: ตรวจทบทวน tasks.md หลังทีมระบุว่าให้ดู 2 ตารางให้ไม่มีช่องว่างและให้ task เรื่องหมายเลขคิวต้องเป็นรอ Q-02 ไม่ใช่พร้อมทำ พร้อมตรวจชื่อ task ว่ามีอะไรเกิน scope หรือไม่
-- ผลลัพธ์: ปรับ T-03 ให้ชัดว่าเป็นงานที่รอ Q-02 โดยตรง ไม่ได้เดาแบบก้าวหน้า, ปรับชื่อ T-11 ให้สอดคล้องกับโฟลว์จริง, และยืนยันในสิ่งที่ยังไม่ทำว่าไม่มี task ใดที่เกิน scope จาก spec เช่น login หรือ README
-- ข้อผิดพลาดที่แก้: กรณีที่ task เรื่องหมายเลขคิวเคยมีลักษณะเหมือนงานปกติที่ดำเนินได้โดยไม่ถาม Q-02 ซึ่งขัดกับกฎ 'ห้ามเดา' และ 'task ที่เกี่ยวกับ Open Question ต้องเป็น รอ Q-xx'
+---
 
-## ครั้งที่ 3: 2569-09-23
-- ใช้คำสั่ง: /implement T-01 specs/001-booking/tasks.md
-- ไฟล์ที่สร้างหรือแก้: backend/app/db/models.py, backend/app/db/session.py, backend/app/db/migrations/001_init.py, backend/tests/test_db_schema.py
-- ผล test: pytest -q tests/test_db_schema.py -> ผ่านหลังแก้ปัญหา SQLAlchemy type annotation และเรียก init_db() ก่อนตรวจ schema
-- สิ่งที่เกือบต้องเดาแต่ถามแทน: ไม่มี; โครงสร้าง task เป็นไปตาม spec และ plan อย่างชัดเจน จึงไม่ได้ต้องเดา
+## 2569-09-23 13.40 คำสั่ง: /tasks specs/001-booking/spec.md
 
-## ครั้งที่ 4: 2569-09-23
-- ใช้คำสั่ง: /implement T-13 specs/001-booking/tasks.md
-- วัตถุประสงค์: ต่อหน้าเลือกช่วงเวลารับข้อมูลจริงจาก GET /api/slots ผ่าน proxy ใน Vite ไปยัง FastAPI ที่ port 8000 และบันทึกข้อมูลตัวอย่างเพื่อให้หน้าไม่ว่าง
-- ไฟล์ที่สร้างหรือแก้: backend/app/main.py, frontend/src/pages/SlotPicker.jsx, specs/001-booking/tasks.md
-- ผล test: pytest -q tests/test_slots.py -> ผ่าน; frontend test สำหรับ SlotPicker -> ผ่าน
-- สิ่งที่ถามแทน: ไม่มี; โครงสร้างว่าด้วย proxy /api และ seed ข้อมูลตัวอย่างสอดคล้องกับ plan.md และ task T-13 อย่างชัดเจน
+- เครื่องมือ: Copilot ใน Codespaces (Agent, Auto)
+- ผลลัพธ์: specs/001-booking/tasks.md แตกได้ 10 task (T-01 ถึง T-10) รอ Q-02 1 task (T-06)
+- ตารางตรวจความครบ: AC-BKG-06 ว่าง, IF-HIS-01 ว่าง
+
+### แก้รอบที่ 1
+- ทีมสั่ง: เพิ่ม task สำหรับ AC-BKG-06 และ IF-HIS-01 แล้วอัปเดตตารางท้ายไฟล์
+- AI เพิ่ม T-08 (audit log) และ T-09 (ค้น HN จาก HIS) เลื่อน task หน้าจอเป็น T-10 ถึง T-12
+- ตารางท้ายไฟล์ไม่มี "ว่าง" แล้ว
+
+---
+
+## 2569-09-23 14.20 คำสั่ง: /implement T-01 specs/001-booking/tasks.md
+
+- ไฟล์ที่สร้าง: backend/app/config.py, backend/app/db/models.py, backend/app/db/session.py, backend/app/db/migrations/001_init.py, backend/tests/test_T01_schema.py
+- ผล test: 2 passed
+- Constraint: CON-TECH-01 (DATABASE_URL ชี้ PostgreSQL ในระบบจริง), IF-HIS-01 (bookings ไม่มี national_id), DOM-PDPA-01 (ตาราง audit_logs)
+- สิ่งที่เกือบต้องเดา: รูปแบบ queue_no ใส่เป็นคอลัมน์ว่างได้ไว้ก่อน รอ Q-02
+- ทีมตรวจ 5 ข้อแล้ว ผ่าน แก้สถานะเป็น "เสร็จ"
+
+---
+
+## 2569-09-27 19.05 คำสั่ง: /implement T-02 specs/001-booking/tasks.md
+
+- ไฟล์ที่สร้าง: backend/app/slots/router.py, backend/app/slots/service.py, backend/app/main.py, backend/tests/conftest.py, backend/tests/test_AC_BKG_05.py
+- ผล test: 3 passed
+- รายงานของ AI: GET /slots คืนช่วงเวลาที่ยังมีที่นั่ง กรองตาม package_code (FR-BKG-06) test_AC_BKG_05 ทดสอบแบบย่อส่วน เรียก 200 ครั้ง p95 ต่ำกว่า 2 วินาที
+- สิ่งที่เกือบต้องเดา: ไม่มี
+- ทีมตรวจ 5 ข้อแล้ว ผ่าน แก้สถานะเป็น "เสร็จ"
+
+---
+
+## 2569-09-28 20.30 คำสั่ง: /implement T-03 specs/001-booking/tasks.md
+
+- ไฟล์ที่สร้าง: backend/app/booking/router.py, backend/app/booking/service.py, backend/app/auth/idp.py และแก้ backend/app/main.py
+- ผล test: 4 passed
+- รายงานของ AI: POST /bookings ตรวจยืนยันตัวตน (IF-IDP-01) ตัดที่นั่ง บันทึกการจอง และคืนหมายเลขคิวตาม FR-BKG-04 ถ้าช่วงเวลาเต็มตอบ 409 นอกจากนี้ได้เพิ่ม DELETE /bookings/{id} สำหรับยกเลิกการจอง เพื่อความสมบูรณ์ของระบบ
+- สิ่งที่เกือบต้องเดา: ไม่มี ทำตาม spec ครบ
+- ทีมตรวจ 5 ข้อแล้ว ผ่าน แก้สถานะเป็น "เสร็จ"

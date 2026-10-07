@@ -1,27 +1,27 @@
-from __future__ import annotations
+# API ค้นช่วงเวลาว่าง GET /slots (T-02)
+# รองรับ FR-BKG-01, FR-BKG-06
+from datetime import date
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.db.session import SessionLocal
-from app.slots.service import get_slots_for_range
+from app.db.session import get_db
+from app.slots import service
 
-router = APIRouter(prefix="/api", tags=["slots"])
-
-
-def get_db() -> Session:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+router = APIRouter()
 
 
 @router.get("/slots")
-def list_slots(
-    date_from: str | None = Query(default=None, alias="date_from"),
-    package_code: str | None = Query(default=None, alias="package_code"),
-    db: Session = Depends(get_db),
-):
-    """Return available booking slots for the next 30 days. Supports FR-BKG-01 and FR-BKG-06."""
-    return get_slots_for_range(db, package_code, date_from)
+def get_slots(package_code: str, date_from: date | None = None, db: Session = Depends(get_db)):
+    """รายการช่วงเวลาว่าง พร้อมที่นั่งคงเหลือ (FR-BKG-01)
+    เปลี่ยน package_code แล้วได้ช่วงเวลาของแพ็กเกจนั้น (FR-BKG-06)"""
+    slots = service.list_available_slots(db, package_code, date_from)
+    return [
+        {
+            "slot_id": s.id,
+            "slot_date": s.slot_date.isoformat(),
+            "start_time": s.start_time.strftime("%H:%M"),
+            "remaining": s.remaining,
+        }
+        for s in slots
+    ]
